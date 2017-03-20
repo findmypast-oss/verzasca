@@ -1,21 +1,15 @@
 const inquirer = require('inquirer')
-const buildStatus = require('./build-status')
-const formatBuildStatus = require('./format-build-status')
 const async = require('async')
+const request = require('superagent')
+const chalk = require('chalk')
 
-module.exports = (options) => {
-  const iterator = buildStatus.bind(null, options)
+module.exports = function app(options) {
+  const iterator = getBuildStatus.bind(null, options)
 
   async.map(options.builds, iterator, function(err, results) {
-    const buildSummary = results
-      .map(x => x.body.build[0])
-      .map(x => ({
-        webUrl: x.webUrl,
-        buildTypeId: x.buildTypeId,
-        status: x.status
-      }))
+    const buildStatuses = results.map(x => x.body.build[0])
 
-    if(buildSummary.every( ({status}) => status === 'SUCCESS' )) {
+    if(buildStatuses.every( ({status}) => status === 'SUCCESS' )) {
       process.exit(0)
     }
 
@@ -24,7 +18,7 @@ module.exports = (options) => {
         {
           type: 'list',
           name: 'checkBuild',
-          message: formatBuildStatus(buildSummary),
+          message: formatBuildStatuses(buildStatuses),
           choices: [
             'No',
             'Yes'
@@ -38,4 +32,35 @@ module.exports = (options) => {
         process.exit(0)
       });
   })
+}
+
+function formatStatus({buildTypeId, webUrl, status}) {
+  const colour = status === "SUCCESS" ? chalk.green : chalk.red
+  return colour(`
+Build Name: ${buildTypeId}
+Status:     ${status}
+Url:        ${webUrl}
+  `)
+}
+
+function formatBuildStatuses( buildStatuses ) {
+  const table = buildStatuses.reduce((acc, build) => {
+    return `${acc} ${formatStatus(build)}`
+  }, '')
+
+  return `
+================== TEAMCITY STATUS ==================
+${table}
+=====================================================
+${chalk.red('There are broken builds, do you want to continue?')}
+=====================================================
+`
+}
+
+function getBuildStatus({url, auth}, build, done) {
+  request
+    .get(`${url}/httpAuth/app/rest/builds/?locator=buildType:${build}`)
+    .set('Authorization', `Basic ${auth}`)
+    .accept('application/json')
+    .end(done)
 }
