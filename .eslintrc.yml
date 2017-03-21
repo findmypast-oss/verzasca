@@ -22,5 +22,6 @@
       - error
       - stroustrup
     no-process-exit: 'off'
+    no-console: 'off'
   globals:
     expect: true

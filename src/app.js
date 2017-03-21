@@ -25,8 +25,6 @@ function formatBuildStatuses(buildStatuses) {
 ================== TEAMCITY STATUS ==================
 ${table}
 =====================================================
-${chalk.red('There are broken builds, do you want to continue?')}
-=====================================================
 `
 }
 
@@ -44,39 +42,49 @@ function allBuildsPassed(buildStatuses) {
   )
 }
 
-function app(options) {
+function interactiveMode() {
+  inquirer
+    .prompt([
+      {
+        type: 'list',
+        name: 'checkBuild',
+        message: chalk.red('There are broken builds, do you want to continue?'),
+        choices: [
+          'No',
+          'Yes'
+        ]
+      }
+    ])
+    .then(answers => {
+      if (answers.checkBuild === 'No') {
+        throw new Error('Stop')
+      }
+    })
+}
+
+function app(options, done) {
   const iterator = getBuildStatus.bind(null, options)
 
   async.map(options.builds, iterator, (err, results) => {
     if (err) {
-      process.stdout(err)
-      process.exit(1)
+      console.error(err)
+      return done(err)
     }
 
     const buildStatuses = results.map(x => x.body.build[0])
 
+    console.log(formatBuildStatuses(buildStatuses))
+
     if (allBuildsPassed(buildStatuses)) {
-      process.exit(0)
+      return done()
     }
 
-    inquirer
-      .prompt([
-        {
-          type: 'list',
-          name: 'checkBuild',
-          message: formatBuildStatuses(buildStatuses),
-          choices: [
-            'No',
-            'Yes'
-          ]
-        }
-      ])
-      .then(answers => {
-        if (answers.checkBuild === 'No') {
-          process.exit(1)
-        }
-        process.exit(0)
-      })
+    if (options.testMode) {
+      return done()
+    }
+
+    interactiveMode()
+    return done()
   })
 }
 
