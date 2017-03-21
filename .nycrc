@@ -11,11 +11,10 @@
     "src/**/*.js"
   ],
   "exclude": [
-    "src/**/*.spec.js",
+    "./**/*.spec.js",
     "src/cli.js"
   ],
   "require": [
-    "mocha-teamcity-reporter",
     "./test/globals"
   ],
   "cache": true,

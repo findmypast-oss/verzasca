@@ -6,8 +6,9 @@ const app = require('./app')
 program
   .version(version)
   .option('--url <url>', 'Set teamcity url')
-  .option('--builds <builds...>', 'The builds to check the status of (comma separated)', x => x.split(","))
+  .option('--builds <builds...>', 'The builds to check the status of (comma separated)', x => x.split(','))
   .option('--auth <auth>', 'Basic auth token for teamcity')
+  .option('--non-interactive', 'Run in non interactive mode')
   .parse(process.argv)
 
 if (!process.argv.slice(2).length) {

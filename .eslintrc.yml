@@ -21,7 +21,6 @@
     brace-style:
       - error
       - stroustrup
+    no-process-exit: 'off'
   globals:
-    mockery: true
-    sinon: true
     expect: true

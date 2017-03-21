@@ -2,23 +2,29 @@
   "name": "verzasca",
   "version": "0.0.1",
   "description": "Add some friction if teamcity builds are red",
+  "bin": {
+    "verzasca": "./bin/index.js"
+  },
   "scripts": {
     "lint": "eslint ./src/ --max-warnings=0",
-    "test": "nyc mocha --opts test/local.opts src/**/*spec.js",
-    "publish_add_creds": "supersoaker squirt -r https://registry.npmjs.org",
-    "publish_to_npm": "publish"
+    "coverage": "nyc mocha --opts test/local.opts ./**/*spec.js",
+    "test": "npm run lint && npm run coverage"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/findmypast/node-cli-template.git"
+    "url": "git+https://github.com/findmypast-oss/verzasca.git"
   },
-  "keywords": [],
+  "keywords": [
+    "teamcity",
+    "automation",
+    "findmypast"
+  ],
   "author": "Findmypast",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/findmypast/node-cli-template/issues"
+    "url": "https://github.com/findmypast-oss/verzasca/issues"
   },
-  "homepage": "https://github.com/findmypast/node-cli-template#readme",
+  "homepage": "https://github.com/findmypast-oss/verzasca#readme",
   "dependencies": {
     "async": "^2.1.5",
     "chalk": "^1.1.3",
@@ -31,13 +37,9 @@
     "eslint": "^3.17.1",
     "eslint-config-eslint": "^4.0.0",
     "mocha": "^3.2.0",
-    "mocha-teamcity-reporter": "^1.1.1",
-    "mockery": "^2.0.0",
+    "mountebank": "^1.9.0",
     "nyc": "^10.1.2",
-    "publish": "^0.6.0",
-    "sinon": "^1.17.7",
-    "sinon-chai": "^2.8.0",
-    "supersoaker": "^1.0.1"
+    "publish": "^0.6.0"
   },
   "engines": {
     "node": ">=6.0.0"
