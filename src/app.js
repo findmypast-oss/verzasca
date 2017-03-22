@@ -50,14 +50,13 @@ function interactiveMode(done) {
         name: 'checkBuild',
         message: chalk.red('There are broken builds, do you want to continue?'),
         choices: [
-          'No',
-          'Yes'
+          'Stop',
+          'Continue'
         ]
       }
     ])
     .then(answers => {
-      const err = answers.checkBuild === 'No' ? 'Stop' : null
-
+      err = answers.checkBuild === 'Stop' ? 'Stop' : null
       done(err)
     })
 }
