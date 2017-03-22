@@ -6,7 +6,6 @@ CLI tool to check teamcity builds add friction if you've got broken builds
 [![Coveralls](https://img.shields.io/coveralls/findmypast-oss/verzasca.svg)](https://coveralls.io/github/findmypast-oss/verzasca)
 [![License](https://img.shields.io/github/license/findmypast-oss/verzasca.svg)](https://github.com/findmypast-oss/verzasca/blob/master/LICENSE)
 
-
 ### Installing
 
 Install globally `npm install -g verzasca`
@@ -14,6 +13,17 @@ Install globally `npm install -g verzasca`
 ### When would I use this?
 
 Add this as a git [pre-hook](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) as part of your `git push` then you can avoid putting more commits on top of a broken build.
+
+An example `pre-push` might look a little like this
+
+```sh
+#!/bin/bash
+#allow interactive shell commands
+exec < /dev/tty
+
+# check for broken builds
+verzasca --url http://teamcity --auth ABCDEFGHIG --builds Build1,Build2 || exit
+```
 
 ### Usage + Example
 
@@ -29,18 +39,11 @@ Options:
   --auth <auth>         Basic auth token for teamcity
 ```
 
-This is an example command
+This is an example command which will result in output like below
 
 ```
 verzasca --url http://teamcity --auth ABCDEFGHIG --builds Build1,Build2
 ```
-
-Will result in this output
-
- - if you select no exit code 1 is sent
- - if you select yes then exit code 0
-
-If no builds are failing your build will continue as normal
 
 ```
 ================== TEAMCITY STATUS ==================
@@ -57,6 +60,8 @@ Url:        http://teamcity/viewLog.html?buildId=124&buildTypeId=Build2
 There are broken builds, do you want to continue?
 =====================================================
  (Use arrow keys)
-❯ No
-  Yes
+❯ Stop
+  Continue
 ```
+
+Selecting `Stop` will exit with code 1, selecting `Continue` will exit with code 0
