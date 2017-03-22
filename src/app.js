@@ -56,7 +56,8 @@ function interactiveMode(done) {
       }
     ])
     .then(answers => {
-      err = answers.checkBuild === 'Stop' ? 'Stop' : null
+      const err = answers.checkBuild === 'Stop' ? 'Stop' : null
+
       done(err)
     })
 }
