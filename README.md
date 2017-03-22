@@ -1,6 +1,12 @@
 # verzasca
 CLI tool to check teamcity builds add friction if you've got broken builds
 
+[![npm](https://img.shields.io/npm/v/verzasca.svg)](https://www.npmjs.com/package/verzasca)
+[![Build](https://img.shields.io/travis/findmypast-oss/verzasca.svg)](https://travis-ci.org/findmypast-oss/verzasca)
+[![Coveralls](https://img.shields.io/coveralls/findmypast-oss/verzasca.svg)](https://coveralls.io/github/findmypast-oss/verzasca)
+[![License](https://img.shields.io/github/license/findmypast-oss/verzasca.svg)](https://github.com/findmypast-oss/verzasca/blob/master/LICENSE)
+
+
 ### Installing
 
 Install globally `npm install -g verzasca`
