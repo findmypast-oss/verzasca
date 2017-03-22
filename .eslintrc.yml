@@ -23,5 +23,7 @@
       - stroustrup
     no-process-exit: 'off'
     no-console: 'off'
+    consistent-return: 'off'
+    no-confusing-arrow: 'off'
   globals:
     expect: true

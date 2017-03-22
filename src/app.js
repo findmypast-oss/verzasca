@@ -42,7 +42,7 @@ function allBuildsPassed(buildStatuses) {
   )
 }
 
-function interactiveMode() {
+function interactiveMode(done) {
   inquirer
     .prompt([
       {
@@ -56,9 +56,9 @@ function interactiveMode() {
       }
     ])
     .then(answers => {
-      if (answers.checkBuild === 'No') {
-        throw new Error('Stop')
-      }
+      const err = answers.checkBuild === 'No' ? 'Stop' : null
+
+      done(err)
     })
 }
 
@@ -83,8 +83,7 @@ function app(options, done) {
       return done()
     }
 
-    interactiveMode()
-    return done()
+    interactiveMode(done)
   })
 }
 

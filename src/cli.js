@@ -16,12 +16,7 @@ if (!process.argv.slice(2).length) {
   process.exit(0)
 }
 
-try {
-  app(
-    { url: program.url, builds: program.builds, auth: program.auth },
-    () => process.exit(0)
-  )
-}
-catch (err) {
-  process.exit(1)
-}
+app(
+  { url: program.url, builds: program.builds, auth: program.auth },
+  err => !err ? process.exit(0) : process.exit(1)
+)
