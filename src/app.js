@@ -55,7 +55,7 @@ function interactiveMode(done) {
     });
 }
 
-function app(options, done, interactiveModeActive = true) {
+function app(options, done) {
   const iterator = getBuildStatus.bind(null, options);
 
   async.map(options.builds, iterator, (err, results) => {
@@ -76,10 +76,10 @@ function app(options, done, interactiveModeActive = true) {
       return done();
     }
 
-    if (interactiveModeActive) {
-      interactiveMode(done);
-    } else {
+    if (options.headless) {
       done(err);
+    } else {
+      interactiveMode(done);
     }
   });
 }
