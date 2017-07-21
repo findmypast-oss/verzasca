@@ -1,6 +1,6 @@
 {
   "name": "verzasca",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Add some friction if teamcity builds are red",
   "bin": {
     "verzasca": "./bin/index.js"
