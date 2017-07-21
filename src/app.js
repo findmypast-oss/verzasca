@@ -77,7 +77,7 @@ function app(options, done) {
     }
 
     if (options.headless) {
-      done(err);
+      done(new Error('Build status is not green.'));
     } else {
       interactiveMode(done);
     }
