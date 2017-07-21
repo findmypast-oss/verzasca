@@ -1,31 +1,29 @@
-const inquirer = require('inquirer')
-const async = require('async')
-const request = require('superagent')
-const chalk = require('chalk')
+const inquirer = require('inquirer');
+const async = require('async');
+const request = require('superagent');
+const chalk = require('chalk');
 
 function formatStatus({ buildTypeId, webUrl, status }) {
-
-  const colour = status === 'SUCCESS'
-    ? chalk.green
-    : chalk.red
+  const colour = status === 'SUCCESS' ? chalk.green : chalk.red;
 
   return colour(`
 Build Name: ${buildTypeId}
 Status:     ${status}
 Url:        ${webUrl}
-  `)
+  `);
 }
 
 function formatBuildStatuses(buildStatuses) {
-  const table = buildStatuses.reduce((acc, build) =>
-    `${acc} ${formatStatus(build)}`
-  , '')
+  const table = buildStatuses.reduce(
+    (acc, build) => `${acc} ${formatStatus(build)}`,
+    ''
+  );
 
   return `
 ================== TEAMCITY STATUS ==================
 ${table}
 =====================================================
-`
+`;
 }
 
 function getBuildStatus({ url, auth }, build, done) {
@@ -33,13 +31,11 @@ function getBuildStatus({ url, auth }, build, done) {
     .get(`${url}/httpAuth/app/rest/builds/?locator=buildType:${build}`)
     .set('Authorization', `Basic ${auth}`)
     .accept('application/json')
-    .end(done)
+    .end(done);
 }
 
 function allBuildsPassed(buildStatuses) {
-  return buildStatuses.every(({ status }) =>
-    status === 'SUCCESS'
-  )
+  return buildStatuses.every(({ status }) => status === 'SUCCESS');
 }
 
 function interactiveMode(done) {
@@ -49,42 +45,43 @@ function interactiveMode(done) {
         type: 'list',
         name: 'checkBuild',
         message: chalk.red('There are broken builds, do you want to continue?'),
-        choices: [
-          'Stop',
-          'Continue'
-        ]
-      }
+        choices: ['Stop', 'Continue'],
+      },
     ])
     .then(answers => {
-      const err = answers.checkBuild === 'Stop' ? 'Stop' : null
+      const err = answers.checkBuild === 'Stop' ? 'Stop' : null;
 
-      done(err)
-    })
+      done(err);
+    });
 }
 
-function app(options, done) {
-  const iterator = getBuildStatus.bind(null, options)
+function app(options, done, interactiveModeActive = true) {
+  const iterator = getBuildStatus.bind(null, options);
 
   async.map(options.builds, iterator, (err, results) => {
     if (err) {
-      console.error(err)
-      return done(err)
+      console.error(err);
+      return done(err);
     }
 
-    const buildStatuses = results.map(x => x.body.build[0])
+    const buildStatuses = results.map(x => x.body.build[0]);
 
-    console.log(formatBuildStatuses(buildStatuses))
+    console.log(formatBuildStatuses(buildStatuses));
 
     if (allBuildsPassed(buildStatuses)) {
-      return done()
+      return done();
     }
 
     if (options.testMode) {
-      return done()
+      return done();
     }
 
-    interactiveMode(done)
-  })
+    if (interactiveModeActive) {
+      interactiveMode(done);
+    } else {
+      done(err);
+    }
+  });
 }
 
-module.exports = app
+module.exports = app;

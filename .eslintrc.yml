@@ -5,9 +5,6 @@
     es6: true
     mocha: true
   rules:
-    semi:
-      - error
-      - never
     strict:
       - error
       - never
@@ -17,10 +14,8 @@
     indent:
       - error
       - 2
+    comma-dangle: 'off'
     require-jsdoc: 'off'
-    brace-style:
-      - error
-      - stroustrup
     no-process-exit: 'off'
     no-console: 'off'
     consistent-return: 'off'
